@@ -54,7 +54,7 @@
   (define totalSinIva (* cantidad precio))
   (define totalConIva (if (< totalSinIva 3000)
                          totalSinIva
-                         (+ totalSinIva (* totalSinIva 0.13))))
+                         (* totalSinIva 0.13)))
   ;; Muestra los detalles de la factura.
   (displayln (string-append "Factura:"))
   (displayln
@@ -62,8 +62,8 @@
     (list "Producto: " nombre)
     (list "Cantidad: " cantidad)
     (list "Precio: " precio)
-    (list "Total sin IVA: " totalSinIva)
-    (list "Total con IVA: " totalConIva))))
+    (list "Total: " totalSinIva)
+    (list "IVA: " totalConIva))))
 
 ;; Ejemplo de uso de las funciones.
 (displayln (venderProducto ListaProductos "Arroz" 2))
