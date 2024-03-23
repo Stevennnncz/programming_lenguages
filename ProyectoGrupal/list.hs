@@ -1,4 +1,3 @@
--- Definición de un tipo de dato para representar a un estudiante
 data Estudiante = Estudiante { nombre :: String, nota :: Float } deriving (Show)
 
 -- Función para calcular la lista de mejores estudiantes
@@ -9,7 +8,7 @@ mejoresEstudiantes umbral = filter ((>= umbral) . nota)
 promedioGeneral :: [Estudiante] -> Float
 promedioGeneral estudiantes = sum (map nota estudiantes) / fromIntegral (length estudiantes)
 
--- Función principal para probar las funciones
+-- Función principal para probar las funcionesZ
 main :: IO ()
 main = do
     let estudiantes = [ Estudiante "Leiner" 70.0, Estudiante "Steven" 100.0, Estudiante "Walter" 85.0, Estudiante "Karina" 50.0]
