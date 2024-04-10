@@ -71,9 +71,20 @@ def deep_search(start, end, obstacles):
             list: List of tuples representing neighboring nodes.
         """
         x, y = node
-        neighbours = [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]
-        valid_neighbours = list(filter(lambda coord: coord not in obstacles and coord[0] >= 0 and coord[1] >= 0, neighbours))
-        return sorted(valid_neighbours, key=lambda coord: abs(coord[0] - end[0]) + abs(coord[1] - end[1]))
+        dx = [1, -1, 0, 0]  # Increases X
+        dy = [0, 0, 1, -1]  # Increases Y
+
+        # Generates all the posible neighbor coordinates
+        potential_neighbours = map(lambda i: (x + dx[i], y + dy[i]), range(4))
+
+        # Filtrates valid neighbors
+        valid_neighbours = filter(lambda coord: coord not in obstacles and coord[0] >= 0 and coord[1] >= 0, potential_neighbours)
+
+        # Sorts the neighbors acording how close they are to the final node
+        sorted_neighbours = sorted(valid_neighbours, key=lambda coord: abs(coord[0] - end[0]) + abs(coord[1] - end[1]))
+
+        return sorted_neighbours
+
 
     def extend(path, obstacles, visited, end):
         """

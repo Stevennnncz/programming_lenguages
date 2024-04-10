@@ -58,12 +58,12 @@ def create_random_objective():
         y = random.randint(0, 17)
         too_close_to_obstacle = False
         for obstacle in obstacles:
-            # Verificar si la posición generada está demasiado cerca de algún obstáculo
+            # Verifies if the generate position is too close to an obstacle
             if abs(x - obstacle[0]) <= 1 and abs(y - obstacle[1]) <= 1:
                 too_close_to_obstacle = True
                 break
         if not too_close_to_obstacle:
-            # Si la posición generada no está cerca de ningún obstáculo, crear el objetivo y salir del bucle
+            # If the position is not close to an obstacle, creates the obstacle and breaks the cycle
             canvas.create_oval(x * 20 + 5, y * 20 + 5, x * 20 + 15, y * 20 + 15, fill='red')
             objectives.append((x, y))  # Add objective location to the objectives list
             break
@@ -96,10 +96,10 @@ def move_snake_auto(path_to_goal, current_position):
 
     if not path_to_goal:
         print("No remaining objectives. Game over.")
-        # Mostrar una ventana que indique que ya no hay objetivos
+        # Shows in a window that there are no objectives remaining
         no_objetivos_label = tk.Label(root, text="¡Ya no hay objetivos!", fg="red", font=("Arial", 16))
         no_objetivos_label.place(relx=0.5, rely=0.5, anchor="center")
-        root.update()  # Actualizar la ventana
+        root.update()  # Updates the window
         return
 
     for next_position in path_to_goal:
@@ -108,9 +108,9 @@ def move_snake_auto(path_to_goal, current_position):
         movements += 1
         movements_label.config(text=f"Movimientos: {movements}")
 
-        # Esperar un corto tiempo entre cada movimiento para visibilidad
+        
         time.sleep(0.3)
-        root.update()  # Actualizar la ventana después de cada movimiento
+        root.update()  # Updates the window after every movement
 
     if current_position == goal:
         score += 1
@@ -118,7 +118,7 @@ def move_snake_auto(path_to_goal, current_position):
         
         obj_ids = canvas.find_overlapping(goal[0] * 20, goal[1] * 20, goal[0] * 20 + 20, goal[1] * 20 + 20)
         if obj_ids:
-            canvas.itemconfig(obj_ids[-1], fill='')  # Cambiar el color de relleno del objetivo a transparente
+            canvas.itemconfig(obj_ids[-1], fill='')  # Changes the color of the objective
 
         objectives.pop(0)
         if len(objectives) != 0:
@@ -129,7 +129,7 @@ def move_snake_auto(path_to_goal, current_position):
             # Mostrar una ventana que indique que ya no hay objetivos
             no_objetivos_label = tk.Label(root, text="¡Ya no hay objetivos!", fg="red", font=("Arial", 16))
             no_objetivos_label.place(relx=0.5, rely=0.5, anchor="center")
-            root.update()  # Actualizar la ventana
+            root.update()  # Updates the window
             return
 
 
