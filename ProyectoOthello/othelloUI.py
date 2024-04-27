@@ -108,11 +108,11 @@ class OthelloGUI:
         self.master = master
         self.game = game
         self.master.title("Othello")
-        self.canvas = tk.Canvas(self.master, width=400, height=420, bg="white")
+        self.canvas = tk.Canvas(self.master, width=400, height=420, bg="brown")
         self.canvas.pack()
-        self.black_label = tk.Label(self.master, text="Fichas Negras: {}".format(game.black_count), bg="white", fg="black")
+        self.black_label = tk.Label(self.master, text="Fichas Negras: {}".format(game.black_count), bg="brown", fg="white")
         self.black_label.pack()
-        self.white_label = tk.Label(self.master, text="Fichas Blancas: {}".format(game.white_count), bg="white", fg="black")
+        self.white_label = tk.Label(self.master, text="Fichas Blancas: {}".format(game.white_count), bg="brown", fg="white")
         self.white_label.pack()
         self.draw_board()
         self.canvas.bind("<Button-1>", self.on_click)
@@ -128,11 +128,11 @@ class OthelloGUI:
                 y1 = row * cell_size
                 x2 = x1 + cell_size
                 y2 = y1 + cell_size
-                self.canvas.create_rectangle(x1, y1, x2, y2, fill="white", tags="board")
+                self.canvas.create_rectangle(x1, y1, x2, y2, fill="brown", tags="board")
                 if self.game.board[row][col] == BLACK:
-                    self.canvas.create_oval(x1 + 2, y1 + 2, x2 - 2, y2 - 2, fill="red", tags="pieces")
+                    self.canvas.create_rectangle(x1 + 5, y1 + 5, x2 - 5, y2 - 5, fill="black", tags="pieces")
                 elif self.game.board[row][col] == WHITE:
-                    self.canvas.create_oval(x1 + 2, y1 + 2, x2 - 2, y2 - 2, fill="blue", tags="pieces")
+                    self.canvas.create_rectangle(x1 + 5, y1 + 5, x2 - 5, y2 - 5, fill="white", tags="pieces")
 
         self.highlight_invalid_moves()
         self.black_label.config(text="Fichas Negras: {}".format(self.game.black_count))
