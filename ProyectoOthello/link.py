@@ -12,7 +12,7 @@ def optimal_play(player, board):
     big_pl_board = pl_board(board)
     moves = []
 
-    for result in prolog.query(f"jugadas_validas({player}, {big_pl_board}, Jugadas)"):
+    for result in prolog.query(f"valid_moves({player}, {big_pl_board}, Jugadas)"):
         print("Movimientos posibles", player, ":")
         for play in result["Jugadas"]:
             row = play.args[0] - 1
