@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        input[type="file"],
+        input[type="text"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .error-message {
+            background-color: #ffcccc;
+            color: #cc0000;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        #savedText {
+            display: none;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        #mail {
+            display: none;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        #saveButton {
+            display: none;
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #processedImageContainer {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Upload Image</h2>
+        <form id="uploadForm" action="/" method="POST" enctype="multipart/form-data">
+            <label for="image">Choose an image:</label>
+            <input type="file" name="image" id="image" accept="image/*" required><br>
+            <label for="text">UpText:</label>
+            <input type="text" name="text1" id="text1"><br>
+            <label for="text">DownText:</label>
+            <input type="text" name="text2" id="text2"><br>
+
+            <label for="font">Font:</label>
+            <select name="font" id="font">
+                <option value="arial.ttf">Arial</option>
+                <option value="times.ttf">Times New Roman</option>
+                <option value="Wedding.ttf">Wedding</option>
+            </select><br>
+            <input type="submit" value="Upload">
+        </form>
+        
+        <!-- Error message section -->
+        <!-- Error messages will be inserted here dynamically -->
+
+        <!-- Contenedor para la imagen procesada y el campo de texto junto al botón de guardar -->
+        <div id="processedImageContainer"></div>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+
+            fetch('/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('processedImageContainer').innerHTML = data;
+
+                var savedText = document.createElement('input');
+                savedText.setAttribute('type', 'text');
+                savedText.setAttribute('name', 'savedText');
+                savedText.setAttribute('id', 'savedText');
+                savedText.setAttribute('placeholder', 'File name');
+                savedText.setAttribute('required', '');
+                savedText.style.display = 'block';
+
+                var mail = document.createElement('input');
+                mail.setAttribute('type', 'text');
+                mail.setAttribute('name', 'mail');
+                mail.setAttribute('id', 'mail');
+                mail.setAttribute('placeholder', 'Email');
+                mail.style.display = 'block';
+
+                var saveButton = document.createElement('button');
+                saveButton.setAttribute('type', 'button');
+                saveButton.setAttribute('id', 'saveButton');
+                saveButton.innerText = 'Save';
+                saveButton.style.display = 'inline-block';
+
+                document.getElementById('processedImageContainer').appendChild(savedText);
+                document.getElementById('processedImageContainer').appendChild(mail);
+                document.getElementById('processedImageContainer').appendChild(saveButton);
+                
+                document.getElementById('savedText').style.display = 'block';
+                document.getElementById('mail').style.display = 'block';
+                document.getElementById('saveButton').style.display = 'inline-block';
+
+                document.getElementById('saveButton').addEventListener('click', function() {
+                    var textValue = document.getElementById('savedText').value;
+                    var emailValue = document.getElementById('mail').value;
+                    var imgBase64 = document.querySelector('#processedImageContainer img').src;
+                    saveImage(textValue, imgBase64);
+                    // Llamar a la función sendEmail en el servidor
+                    fetch('/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: emailValue,
+                    image: imgBase64,
+                    filename: textValue,
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data); // Mensaje de éxito o error desde el servidor
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+            });
+        });
+
+        function saveImage(filename, imgBase64) {
+            var imgBlob = dataURItoBlob(imgBase64);
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(imgBlob);
+            link.download = filename + '.jpg';
+            link.click();
+        }
+
+        function dataURItoBlob(dataURI) {
+            var byteString = atob(dataURI.split(',')[1]);
+            var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+            var ab = new ArrayBuffer(byteString.length);
+            var ia = new Uint8Array(ab);
+            for (var i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            return new Blob([ab], { type: mimeString });
+        }
+    </script>
+</body>
+</html>
