@@ -23,21 +23,25 @@ import (
 	"github.com/fogleman/gg"
 )
 
-var globalimg = ""
+var globalimg = "" // Variable global para almacenar la imagen codificada en base64
 
+// Request representa la estructura de la solicitud para procesar la imagen
 type Request struct {
-	BgImgPath string
-	FontPath  string
-	FontSize  float64
-	Text1     string
-	Text2     string
+	BgImgPath string  // Ruta de la imagen de fondo
+	FontPath  string  // Ruta de la fuente
+	FontSize  float64 // Tamaño de la fuente
+	Text1     string  // Primer texto a dibujar
+	Text2     string  // Segundo texto a dibujar
 }
 
+// EmailRequest representa la estructura de la solicitud para enviar el correo electrónico
 type EmailRequest struct {
-	Email string
+	Email string // Dirección de correo electrónico del destinatario
 }
 
+// TextOnImg procesa la imagen y dibuja el texto sobre ella
 func TextOnImg(request Request) (image.Image, error) {
+	// Abrir la imagen de fondo
 	bgFile, err := os.Open(request.BgImgPath)
 	if err != nil {
 		return nil, err
@@ -45,6 +49,7 @@ func TextOnImg(request Request) (image.Image, error) {
 	defer bgFile.Close()
 
 	var bgImage image.Image
+	// Decodificar la imagen según su extensión
 	switch extension := filepath.Ext(request.BgImgPath); extension {
 	case ".png":
 		bgImage, err = png.Decode(bgFile)
@@ -62,21 +67,23 @@ func TextOnImg(request Request) (image.Image, error) {
 	imgWidth := bgImage.Bounds().Dx()
 	imgHeight := bgImage.Bounds().Dy()
 
+	// Crear un contexto de dibujo con las dimensiones de la imagen
 	dc := gg.NewContext(imgWidth, imgHeight)
 	dc.DrawImage(bgImage, 0, 0)
 
+	// Cargar la fuente con el tamaño especificado
 	if err := dc.LoadFontFace(request.FontPath, request.FontSize); err != nil {
 		return nil, err
 	}
 
 	x := float64(imgWidth / 2)
 
-	// Verificamos si el texto cumple con los requisitos mínimos y máximos
+	// Validar el texto
 	if !validateText(request.Text1, request.Text2) {
-		return nil, errors.New("el texto debe tener un mínimo de 10 letras y dos palabras, y un máximo de tres palabras y 20 caracteres")
+		return nil, errors.New("el texto debe tener un mínimo de 5 letras y una palabra, y un máximo de dos palabras y 12 caracteres")
 	}
 
-	// Calculamos el tamaño óptimo del texto para abarcar el ancho completo de la imagen
+	// Calcular el tamaño óptimo del texto para abarcar el ancho completo de la imagen
 	maxWidth := float64(imgWidth) - 60.0
 	estimatedTextWidth1 := estimateTextWidth(request.Text1, request.FontSize)
 	estimatedTextWidth2 := estimateTextWidth(request.Text2, request.FontSize)
@@ -86,7 +93,7 @@ func TextOnImg(request Request) (image.Image, error) {
 	newFontSize1 := request.FontSize * scale1
 	newFontSize2 := request.FontSize * scale2
 
-	// Ajustamos el tamaño de la fuente para que el texto ocupe el ancho completo
+	// Ajustar el tamaño de la fuente según sea necesario
 	if request.Text1 != " " && request.Text2 == " " {
 		if err := dc.LoadFontFace(request.FontPath, newFontSize1); err != nil {
 			return nil, err
@@ -99,19 +106,16 @@ func TextOnImg(request Request) (image.Image, error) {
 		if err := dc.LoadFontFace(request.FontPath, newFontSize1); err != nil {
 			return nil, err
 		}
-
 		if err := dc.LoadFontFace(request.FontPath, newFontSize2); err != nil {
 			return nil, err
 		}
 	}
 
-	y1 := 20.0                                                 // Mueve el texto lo más arriba posible
-	y2 := float64(imgHeight) - float64(dc.FontHeight()) - 20.0 // Mueve el texto lo más abajo posible
-	// Si la posición es "bottom", coloca el texto lo más abajo posible
+	y1 := 40.0                                                 // Coordenada Y para el primer texto
+	y2 := float64(imgHeight) - float64(dc.FontHeight()) - 20.0 // Coordenada Y para el segundo texto
 
 	dc.SetColor(color.White)
 	dc.DrawStringWrapped(request.Text1, x, y1, 0.5, 0.5, maxWidth, 1.5, gg.AlignCenter)
-
 	dc.DrawStringWrapped(request.Text2, x, y2, 0.5, 0.5, maxWidth, 1.5, gg.AlignCenter)
 
 	return dc.Image(), nil
@@ -120,31 +124,31 @@ func TextOnImg(request Request) (image.Image, error) {
 // validateText verifica si el texto cumple con los requisitos mínimos y máximos
 func validateText(text1, text2 string) bool {
 	if (text1 != " ") && (text2 == " ") {
-		if len(text1) < 10 {
+		if len(text1) < 5 {
 			return false
 		}
 		words := strings.Fields(text1)
 		if len(words) < 1 || len(words) > 2 {
 			return false
 		}
-		if len(text1) > 20 {
+		if len(text1) > 12 {
 			return false
 		}
 
 	} else if (text1 == " ") && (text2 != " ") {
-		if len(text2) < 10 {
+		if len(text2) < 5 {
 			return false
 		}
 		words := strings.Fields(text2)
 		if len(words) < 1 || len(words) > 2 {
 			return false
 		}
-		if len(text2) > 20 {
+		if len(text2) > 12 {
 			return false
 		}
 
 	} else if (text1 != " ") && (text2 != " ") {
-		if len(text1) < 10 && len(text2) < 10 {
+		if len(text1) < 5 && len(text2) < 5 {
 			return false
 		}
 		words1 := strings.Fields(text1)
@@ -152,13 +156,14 @@ func validateText(text1, text2 string) bool {
 		if (len(words1) < 1 || len(words1) > 2) || (len(words2) < 1 || len(words2) > 2) {
 			return false
 		}
-		if len(text1) > 20 || len(text2) > 20 {
+		if len(text1) > 12 || len(text2) > 12 {
 			return false
 		}
 	}
 	return true
 }
 
+// sendEmail envía un correo electrónico con la imagen adjunta
 func sendEmail(imgBase64Str string, mail string) {
 
 	// Datos de autenticación
@@ -170,9 +175,7 @@ func sendEmail(imgBase64Str string, mail string) {
 	smtpPort := "587"
 
 	// Destinatario
-
 	to := mail
-	//to := "steven070295@gmail.com"
 
 	// Decodificar la cadena Base64
 	imageBytes, err := base64.StdEncoding.DecodeString(imgBase64Str)
@@ -214,6 +217,7 @@ func estimateTextWidth(text string, fontSize float64) float64 {
 	return float64(len(text)) * fontSize * 0.5
 }
 
+// handleUpload maneja la subida de archivos y procesamiento de la imagen
 func handleUpload(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		tmpl := template.Must(template.ParseFiles("upload.html"))
@@ -221,6 +225,7 @@ func handleUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Obtener el archivo subido
 	file, handler, err := r.FormFile("image")
 	if err != nil {
 		fmt.Println("Error al obtener el archivo:", err)
@@ -229,6 +234,7 @@ func handleUpload(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
+	// Guardar el archivo subido
 	filePath := "./" + handler.Filename
 	f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
@@ -240,8 +246,10 @@ func handleUpload(w http.ResponseWriter, r *http.Request) {
 
 	io.Copy(f, file)
 
-	font := r.FormValue("font") // Obtener la fuente seleccionada desde el formulario
+	// Obtener la fuente seleccionada desde el formulario
+	font := r.FormValue("font")
 
+	// Crear la solicitud para procesar la imagen
 	request := Request{
 		BgImgPath: filePath,
 		FontPath:  font, // Asignar la fuente seleccionada al campo FontPath
@@ -252,11 +260,11 @@ func handleUpload(w http.ResponseWriter, r *http.Request) {
 
 	if len(request.Text1) == 0 {
 		request.Text1 = " "
-
 	} else if len(request.Text2) == 0 {
 		request.Text2 = " "
 	}
 
+	// Procesar la imagen
 	img, err := TextOnImg(request)
 	if err != nil {
 		fmt.Println("Error:", err)
@@ -280,6 +288,7 @@ func handleUpload(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, imgBase64Str)
 }
 
+// renderErrorPage renderiza una página de error con el mensaje proporcionado
 func renderErrorPage(w http.ResponseWriter, errorMessage string) {
 	type ErrorPageData struct {
 		Message string
@@ -293,6 +302,7 @@ func renderErrorPage(w http.ResponseWriter, errorMessage string) {
 	tmpl.Execute(w, data)
 }
 
+// HTML para la página de resultado
 const resultPage = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -327,8 +337,8 @@ const resultPage = `<!DOCTYPE html>
 </body>
 </html>`
 
+// emailHandler maneja la solicitud para enviar el correo electrónico
 func emailHandler(w http.ResponseWriter, r *http.Request) {
-
 	if r.Method != http.MethodPost {
 		http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
 		return
@@ -344,6 +354,7 @@ func emailHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Correo enviado correctamente.")
 }
 
+// Función principal para iniciar el servidor HTTP
 func main() {
 	http.HandleFunc("/", handleUpload)
 	http.HandleFunc("/send-email", emailHandler)
