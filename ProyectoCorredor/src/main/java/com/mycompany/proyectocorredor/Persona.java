@@ -9,20 +9,28 @@ package com.mycompany.proyectocorredor;
  * @author steve
  */
 public class Persona {
-    private String name;
-    private String mail;
-    private String phone;
-    private Boolean type;
+    private String nombre;
+    private String correo;
+    private String telefono;
     
-    public Persona(String n, String m, String p, Boolean b) {
-        this.name = n;
-        this.mail = m;
-        this.phone= p;
-        this.type = b;
+    
+    public Persona(String n, String c, String t) {
+        this.nombre = n;
+        this.correo = c;
+        this.telefono = t;
+        
     }
-
+    
+    public String getNombre(){
+    return nombre;
+    }
+    
+    public String getCorreo(){
+    return correo;
+    }
+    
     @Override
     public String toString() {
-        return "Nombre: " + name + ", Correo: " + mail + ", Telefono: " + phone + ", Tipo de sangre: " + type;
+        return "Nombre: " + nombre + ", Correo: " + correo + ", Telefono: " + telefono;
     }
 }
