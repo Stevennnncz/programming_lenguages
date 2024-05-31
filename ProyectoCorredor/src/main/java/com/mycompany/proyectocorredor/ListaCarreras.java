@@ -24,6 +24,15 @@ public class ListaCarreras {
         getInstance().add(carrera);
     }
     
+    
+    public static Carrera CorredorPorNombre(String nombre) {
+        for (Carrera carrera : getInstance()) {
+            if (carrera.getCorredor().getNombre().equals(nombre)) {
+                return carrera;
+            }
+        }
+        return null;
+    }
 }
 
 

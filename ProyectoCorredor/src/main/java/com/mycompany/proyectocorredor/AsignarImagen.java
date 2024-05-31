@@ -23,8 +23,8 @@ public class AsignarImagen extends javax.swing.JFrame {
 
 
     private void cargarCorredores() {
-        for (Corredor corredor : ListaCorredores.getInstance()) {
-            jComboBox1.addItem(corredor.getNombre());
+        for (Carrera carrera : ListaCarreras.getInstance()) {
+            jComboBox1.addItem(carrera.getCorredor().getNombre());
     }
 }
     /**

@@ -9,17 +9,28 @@ package com.mycompany.proyectocorredor;
  * @author steve
  */
 public class Tiempos {
-    private String corredor;
-    private  int tiempoSeg;
-    private int tiempoTotal;
-    private String posicionFinal;
+    private Corredor corredor;
+    private  String tiempoSeg;
+    private String tiempoTotal;
     
     
-    public Tiempos(String c, int ts, int tt, String pf){
+    public Tiempos(Corredor c, String ts, String tt){
         this.corredor = c;
         this.tiempoSeg= ts;
         this.tiempoTotal=tt;
-        this.posicionFinal = pf;
     }
 
+    public Corredor getCorredor() {
+        return corredor;
+    }
+
+    public String getTiempoSeg() {
+        return tiempoSeg;
+    }
+
+    public String getTiempoTotal() {
+        return tiempoTotal;
+    }
+
+    
 }

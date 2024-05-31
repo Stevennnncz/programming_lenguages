@@ -24,8 +24,8 @@ public class Carrera {
         this.category = c;
     }
 
-    public int getIdCorredor(){
-    return nCorredor;
+    public Corredor getCorredor(){
+    return corredor;
 }
  
     public void setIdCorredor(int x){

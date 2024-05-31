@@ -26,9 +26,11 @@ public class ProyectoCorredor {
     
     Persona persona3 = new Persona("Karina", "Karina@gmail.com", "1");
     Persona persona4 = new Persona("Walter", "Walter@gmail.com", "1");
+    Persona persona5 = new Persona("Walter", "a", "1");
     
     listaAdmins.add(persona3);
     listaAdmins.add(persona4);
+    listaAdmins.add(persona5);
     
     
     }
