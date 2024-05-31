@@ -4,7 +4,6 @@
 
 package com.mycompany.proyectocorredor;
 import java.util.ArrayList;
-import com.mycompany.proyectocorredor.ListaCorredores;
 /**
  *
  * @author steve
