@@ -20,4 +20,14 @@ public class Imagen {
         this.imagen = i;
 
     }
+
+    public Corredor getCorredor() {
+        return corredor;
+    }
+
+    public File getImagen() {
+        return imagen;
+    }
+    
+    
 }

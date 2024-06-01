@@ -23,4 +23,16 @@ public class ListaTiempos {
     public static void addTiempos(Tiempos tiempo) {
         getInstance().add(tiempo);
     }
+    
+    
+    public static ArrayList<Tiempos> TiemposPorNombre(String nombre) {
+        ArrayList<Tiempos> listaTiemposCorredor = new ArrayList<Tiempos>();
+        for (Tiempos tiempo : ListaTiempos.getInstance()) {
+            if (tiempo.getCorredor().getNombre().equals(nombre)) { 
+                listaTiemposCorredor.add(tiempo);
+            }}
+            return listaTiemposCorredor;
+        
 }
+}
+

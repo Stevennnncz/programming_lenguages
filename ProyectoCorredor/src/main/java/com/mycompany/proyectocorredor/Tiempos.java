@@ -32,5 +32,8 @@ public class Tiempos {
         return tiempoTotal;
     }
 
-    
+        @Override
+    public String toString() {
+        return "Tiempos{" + "corredor=" + corredor + ", tiempoSeg=" + tiempoSeg + ", tiempoTotal=" + tiempoTotal + '}';
+    }
 }

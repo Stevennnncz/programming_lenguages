@@ -35,10 +35,10 @@ public class ProyectoCorredor {
     }
     
     public static void login(String correo, String tipo) {
-    if ("Corredor".equals(tipo)) {
+        if ("Corredor".equals(tipo)) {
         for (Corredor corredor : ListaCorredores.getInstance()) {
             if (correo.equals(corredor.getCorreo())) {
-                menuCorredor ventanaC = new menuCorredor();
+                menuCorredor ventanaC = new menuCorredor(corredor);
                 ventanaC.setVisible(true);
                 return;
             }

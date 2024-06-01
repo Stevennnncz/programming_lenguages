@@ -10,7 +10,7 @@ package com.mycompany.proyectocorredor;
  */
 public class Corredor extends Persona {
       
-        private String tipoSangre;
+    private String tipoSangre;
     public Corredor(String nombre, String correo, String telefono, String  ts) { 
         super(nombre,correo,telefono);
         this.tipoSangre = ts;

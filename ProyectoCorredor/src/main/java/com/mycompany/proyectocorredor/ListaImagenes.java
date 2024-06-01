@@ -4,6 +4,7 @@
  */
 package com.mycompany.proyectocorredor;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -23,4 +24,14 @@ public class ListaImagenes {
     public static void addImage(Imagen imagen) {
         getInstance().add(imagen);
     }
+    
+    public static ArrayList<File> ImagenesPorCorrdedor(String nombre) {
+        ArrayList<File> listaImagenCorredor = new ArrayList<File>();
+        for (Imagen imagen : ListaImagenes.getInstance()) {
+            if (imagen.getCorredor().getNombre().equals(nombre)) { 
+                listaImagenCorredor.add(imagen.getImagen());
+            }}
+            return listaImagenCorredor;
+        
+}
 }
